@@ -2,6 +2,14 @@
 #define VERSION 1.0-dev
 #define AUTHOR Mathis REVENU
 
+/********************* RECEIVER *********************/
+#define CH1_INPUT 9
+#define CH2_INPUT 9
+#define CH3_INPUT 9
+#define CH4_INPUT 9
+#define CH5_INPUT 9
+#define CH6_INPUT 9
+
 /********************* ANGLE *********************/
 // Number of value taken in count to remove noise from vivration
 #define ANGLE_HISTORY_TO_MEAN 10
