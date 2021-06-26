@@ -7,6 +7,9 @@
 
         Servo aileronServo;
         Servo elevatorServo;
+        Servo throttleServo;
+        Servo rudderServo;
+
 
     } Airplane;
 

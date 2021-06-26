@@ -18,11 +18,21 @@
 #define MPU_ADDR 0x68
 
 /********************* COMMANDS *********************/
-#define AILERON_SERVO_PIN 10
-#define ELEVATOR_SERVO_PIN 11
+#define SERVO1_PIN 10
+#define SERVO2_PIN 11
+#define SERVO3_PIN 12
+#define SERVO4_PIN 13
+
+// binding each airplane part with board pin
+#define AILERON_SERVO_PIN SERVO1_PIN
+#define ELEVATOR_SERVO_PIN SERVO2_PIN
+#define THROTTLE_SERVO_PIN SERVO3_PIN
+#define RUDDER_SERVO_PIN SERVO4_PIN
 
 /********************* LED *********************/
 #define BOARD_LED_PIN 7
+
+// mode config
 #define SLOW_BLINK_FREQUENCY 1000 // = half-period
 #define FAST_BLINK_FREQUENCY 200
 
