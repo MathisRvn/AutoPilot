@@ -87,11 +87,11 @@ void updateInstantAttitude (Attitude *attitude) {
   	attitude->rpitch = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI); 
     
     // Formatting angles
-    attitude->rpitch += 180;
+    attitude->rpitch += 90; // To center the value around 90°
     if (attitude->rpitch >= 360) { attitude->rpitch -= 360; }
     (attitude->instant_angle).pitch = attitude->rpitch;
 
-    attitude->rroll += 180;
+    attitude->rroll += 90;
     if (attitude->rroll >= 360) { attitude->rroll -= 360; }
     (attitude->instant_angle).roll = attitude->rroll;
 

@@ -3,12 +3,12 @@
 #define AUTHOR Mathis REVENU
 
 /********************* RECEIVER *********************/
-#define CH1_INPUT 9
-#define CH2_INPUT 9
-#define CH3_INPUT 9
-#define CH4_INPUT 9
-#define CH5_INPUT 9
-#define CH6_INPUT 9
+#define AILERON_INPUT 9
+#define ELEVATOR_INPUT 9
+#define THROTTLE_INPUT 9
+#define RUDDER_INPUT 9
+#define SWITCH1_INPUT 9
+#define SWITCH2_INPUT 9
 
 /********************* ANGLE *********************/
 // Number of value taken in count to remove noise from vivration
@@ -22,6 +22,10 @@
 #define SERVO2_PIN 11
 #define SERVO3_PIN 12
 #define SERVO4_PIN 13
+
+// servo config
+#define SERVO_MIN_MICROSECONDS 544
+#define SERVO_MAX_MICROSECONDS 2400
 
 // binding each airplane part with board pin
 #define AILERON_SERVO_PIN SERVO1_PIN
