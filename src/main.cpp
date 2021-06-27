@@ -13,7 +13,7 @@
 
 Attitude attitude;
 Airplane airplane;
-Led boardLed(BOARD_LED_PIN, SLOW_BLINK);
+Led boardLed(BOARD_LED_PIN, FAST_BLINK);
 
 PID aileron_PID(2, 0.5, 90, 90);
 Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
@@ -37,9 +37,9 @@ void setup() {
 
 void loop() {
 
-  	updateMeanAngle(&attitude);
-	
   	boardLed.tickLed();
+
+  	updateMeanAngle(&attitude);
 
 	aileronController.tick(attitude.angle.roll);
 	elevatorController.tick(attitude.angle.pitch);
