@@ -23,6 +23,8 @@
 #define SERVO3_PIN 12
 #define SERVO4_PIN 13
 
+#define SERVO_MAX_CLEARANCE 45 // output servo via controller is 90-SERVO_MAX_CLEARANCE < out < 90+SERVO_MAX_CLEARANCE
+
 // servo config
 #define SERVO_MIN_MICROSECONDS 544
 #define SERVO_MAX_MICROSECONDS 2400

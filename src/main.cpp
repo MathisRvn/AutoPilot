@@ -6,11 +6,24 @@
 #include "./Objects/Airplane.h"
 #include "./Objects/Led.h"
 #include "./Objects/Receiver.h"
+#include "./Objects/PID.h"
+#include "./Objects/Controller.h"
+
 #include "./setUpReceiverChannels.h"
 
 Attitude attitude;
 Airplane airplane;
 Led boardLed(BOARD_LED_PIN, SLOW_BLINK);
+
+PID aileron_PID(2, 0.5, 90, 90);
+Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
+
+PID elevator_PID(2, 0.5, 90, 90);
+Controller elevatorController(&(airplane.elevatorServo), &elevatorReceiver, INPUT_COPY, &elevator_PID);
+
+Controller throttleController(&(airplane.throttleServo), &throttleReceiver, INPUT_COPY);
+
+Controller rudderController(&(airplane.rudderServo), &rudderReceiver, INPUT_COPY);
 
 void setup() {
 
@@ -25,7 +38,13 @@ void setup() {
 void loop() {
 
   	updateMeanAngle(&attitude);
+	
   	boardLed.tickLed();
+
+	aileronController.tick(attitude.angle.roll);
+	elevatorController.tick(attitude.angle.pitch);
+	throttleController.tick();
+	rudderController.tick();
 
   	#ifdef ENABLE_DEBUG
 
@@ -40,7 +59,5 @@ void loop() {
 		Serial.println();
 
   	#endif
-
-  	delay(100);
 
 }

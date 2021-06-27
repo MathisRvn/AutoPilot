@@ -25,6 +25,10 @@
                         ControlMode initial_mode,
                         PID *initial_pid);
 
+            Controller(Servo *initial_servo, 
+                        ReceiverPwmChannel *initial_receiverPwmChannel, 
+                        ControlMode initial_mode);
+
             void tick (double axis_angle);
             void tick (void);
 
