@@ -24,16 +24,12 @@ void rudderInterrupt() {
     rudderReceiver.interruptCallback();
 }
 
-#ifdef SWITCH1_INPUT
-  	ReceiverPwmChannel switch1Receiver(SWITCH1_INPUT, switch1Interrupt);
-  	void switch1Interrupt() {
-		switch1Receiver.interruptCallback();
-  	}
-#endif
+ReceiverPwmChannel switch1Receiver(SWITCH1_INPUT, switch1Interrupt);
+void switch1Interrupt() {
+	switch1Receiver.interruptCallback();
+}
 
-#ifdef SWITCH2_INPUT
-  	ReceiverPwmChannel switch2Receiver(SWITCH2_INPUT, switch2Interrupt);
-  	void switch2Interrupt() {
-		switch2Receiver.interruptCallback();
-  	}
-#endif
+ReceiverPwmChannel switch2Receiver(SWITCH2_INPUT, switch2Interrupt);
+void switch2Interrupt() {
+	switch2Receiver.interruptCallback();
+}

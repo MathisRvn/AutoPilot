@@ -14,14 +14,14 @@ Led::Led (int initialPin, LedStatus initalStatus) {
 
 void Led::tickLed () {
     
-    if (status == ON) {
+    if (status == LED_ON) {
         digitalWrite(pin, HIGH);
-    } else if (status == OFF) {
+    } else if (status == LED_OFF) {
         digitalWrite(pin, LOW);
     } else {
 
         unsigned long now = millis();
-        if (status == SLOW_BLINK) {
+        if (status == LED_SLOW_BLINK) {
 
             if (now - last_rising_edge > 2 * SLOW_BLINK_FREQUENCY) {
                 last_rising_edge = now;
@@ -30,7 +30,7 @@ void Led::tickLed () {
                 digitalWrite(pin, LOW);
             }
 
-        } else { // == FAST_BLINK
+        } else { // == FAST_BLINK or error mode
 
             if (now - last_rising_edge > 2 * FAST_BLINK_FREQUENCY) {
                 last_rising_edge = now;

@@ -2,7 +2,7 @@
     #define LED_H
 
     typedef enum LedStatus { 
-        OFF, ON, SLOW_BLINK, FAST_BLINK 
+        LED_OFF, LED_ON, LED_SLOW_BLINK, LED_FAST_BLINK 
     } LedStatus;
 
     class Led {

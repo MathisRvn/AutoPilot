@@ -14,4 +14,18 @@
 
     };
 
+    typedef enum SwitchMode {
+        SWITCH_OFF, SWITCH_UP, SWITCH_MIDDLE, SWITCH_DOWN
+    } SwitchMode;
+
+    class ReceiverSwitch {
+
+        public:
+            ReceiverPwmChannel *receiverPwmChannel;
+            SwitchMode switchMode;
+
+            ReceiverSwitch(ReceiverPwmChannel *initial_receiverPwmChannel);
+            void checkMode();
+    };
+
 #endif

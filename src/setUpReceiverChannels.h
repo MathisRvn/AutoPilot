@@ -15,14 +15,10 @@
     extern ReceiverPwmChannel rudderReceiver;
     void rudderInterrupt();
 
-    #ifdef SWITCH1_INPUT
-        extern ReceiverPwmChannel switch1Receiver;
-        void switch1Interrupt();
-    #endif
+    extern ReceiverPwmChannel switch1Receiver;
+    void switch1Interrupt();
 
-    #ifdef SWITCH2_INPUT
-        extern ReceiverPwmChannel switch2Receiver;
-        void switch2Interrupt();
-    #endif
+    extern ReceiverPwmChannel switch2Receiver;
+    void switch2Interrupt();
 
 #endif
