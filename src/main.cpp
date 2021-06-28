@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <avr/wdt.h>
 
 #include "./config.h"
 
@@ -33,6 +34,8 @@ void setup() {
 
   	initAttitude(&attitude);
   	initAirplane(&airplane);
+
+	wdt_enable(WDTO_TIME);
 }
 
 void loop() {
@@ -59,5 +62,7 @@ void loop() {
 		Serial.println();
 
   	#endif
+
+	wdt_reset();
 
 }

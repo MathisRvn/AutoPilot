@@ -1,3 +1,5 @@
+#include <avr/wdt.h>
+
 /********************* PROGRAM INFO *********************/
 #define VERSION 1.0-dev
 #define AUTHOR Mathis REVENU
@@ -41,6 +43,9 @@
 // mode config
 #define SLOW_BLINK_FREQUENCY 1000 // = half-period
 #define FAST_BLINK_FREQUENCY 200
+
+/********************* WATCHDOG *********************/
+#define WDTO_TIME WDTO_60MS
 
 /********************* DEBUG MODE *********************/
 // #define ENABLE_DEBUG
