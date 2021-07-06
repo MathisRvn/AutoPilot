@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
+#include <Wire.h>
 
 #include "./config.h"
 
@@ -12,9 +13,9 @@
 
 #include "./setUpReceiverChannels.h"
 
-Attitude attitude;
+ImuSensor imuSensor;
 Airplane airplane;
-Led boardLed(BOARD_LED_PIN, LED_FAST_BLINK);
+Led boardLed(BOARD_LED_PIN, LED_SLOW_BLINK);
 
 PID aileron_PID(2, 0.5, 90, 90);
 Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
@@ -31,21 +32,22 @@ ReceiverSwitch switch2(&switch2Receiver);
 
 void setup() {
 
-  	#ifdef ENABLE_DEBUG
-		Serial.begin(9600);
-  	#endif
+	Serial.begin(9600);
+	Wire.begin();
 
-  	initAttitude(&attitude);
+	imuSensor.init();
+
   	initAirplane(&airplane);
 
 	wdt_enable(WDTO_TIME);
+	
 }
 
 void loop() {
 
   	boardLed.tickLed();
 
-  	updateMeanAngle(&attitude);
+  	imuSensor.tick();
 
 	switch1.checkMode();
 	switch2.checkMode();
@@ -62,25 +64,26 @@ void loop() {
 		aileronController.mode = INPUT_COPY;
 	}
 
-	aileronController.tick(attitude.angle.roll);
-	elevatorController.tick(attitude.angle.pitch);
+	aileronController.tick(imuSensor.roll);
+	elevatorController.tick(imuSensor.pitch);
 	throttleController.tick();
 	rudderController.tick();
 
-  	#ifdef ENABLE_DEBUG
+/*
+	if (Serial.available() == 0) {
+		String input = Serial.readString();
+		Serial.println(input);
+		
+		if (input == SERIAL_CALIBRATION_COMMAND) {
+			imuSensor.calibrateGyroOffsets();
+		}else if (input == SERIAL_GET_ATTITUDE_COMMAND) {
+			imuSensor.printAttitude();
+		}else{
+			Serial.println(SERIAL_INVALID_INPUT_RESPONSE);
+		}
 
-		#ifdef PRINT_INSTANT_ANGLE
-	  		printAngle(&(attitude.instant_angle));
-		#endif
-
-		#ifdef PRINT_MEAN_ANGLE
-	  		printAngle(&(attitude.angle));
-		#endif
-
-		Serial.println();
-
-  	#endif
-
+	}
+*/
 	wdt_reset();
 
 }

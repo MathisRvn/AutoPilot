@@ -1,70 +1,28 @@
 #include<Wire.h>
+#include <Arduino.h>
+#include <avr/wdt.h>
 
 #include "../config.h"
+#include "./EEPROM_.h"
 
 #include "./Attitude.h"
 
+void ImuSensor::init() {
 
-#ifdef ENABLE_DEBUG
-    void printAngle(Angle *angle) {
-        Serial.print(angle->pitch);
-        Serial.print(",");
-        Serial.print(angle->roll);
-        Serial.print(",");
-    }
-#endif
+    Wire.beginTransmission(MPU_ADDR); 
+    Wire.write(0x6B); 
+    Wire.write(0); 
+    Wire.endTransmission(true);
 
+    pitch = 90;
+    roll = 90;
 
-void initAngleHistory(AngleHistory *angleHistory, Angle initial_angle) {
-    for (short i = 0; i < ANGLE_HISTORY_TO_MEAN; i++) {
-        angleHistory->history[i] = initial_angle;
-    }
+    loadGyroOffsets();
+
+    last_time_capture = micros();
 }
 
-void addNewAngle(AngleHistory *angleHistory, Angle newAngle) {
-    angleHistory->history[angleHistory->current_index] = newAngle;
-    if (angleHistory->current_index == ANGLE_HISTORY_TO_MEAN-1) {
-        angleHistory->current_index = 0;
-    }else{
-        angleHistory->current_index += 1;
-    }
-}
-
-Angle getMeanAngle(AngleHistory *angleHistory) {
-
-    double pitch_sum = 0;
-    double roll_sum = 0;
-
-    for (short i = 0; i < ANGLE_HISTORY_TO_MEAN; i++) {
-        pitch_sum += angleHistory->history[i].pitch;
-        roll_sum += angleHistory->history[i].roll;
-    }
-    pitch_sum /= ANGLE_HISTORY_TO_MEAN;
-    roll_sum /= ANGLE_HISTORY_TO_MEAN;
-
-    NEW_ANGLE(new_angle, pitch_sum, roll_sum);
-
-    return new_angle;
-}
-
-void initAttitude (Attitude *attitude) {
-    // init MPU6050
-    Wire.begin(); 
-	Wire.beginTransmission(MPU_ADDR); 
-	Wire.write(0x6B); 
-	Wire.write(0); 
-	Wire.endTransmission(true); 
-
-
-    // Init angles
-    updateInstantAttitude(attitude);
-
-    initAngleHistory(&(attitude->history), attitude->instant_angle);
-
-    updateMeanAngle(attitude);
-}
-
-void updateInstantAttitude (Attitude *attitude) {
+void ImuSensor::tick () {
 
     const int minVal=265; const int maxVal=402;
 
@@ -74,31 +32,85 @@ void updateInstantAttitude (Attitude *attitude) {
   	Wire.endTransmission(false);
   	Wire.requestFrom(MPU_ADDR,14,true); 
   
-  	attitude->AcX=Wire.read()<<8|Wire.read(); 
-  	attitude->AcY=Wire.read()<<8|Wire.read(); 
-  	attitude->AcZ=Wire.read()<<8|Wire.read(); 
+  	AcX=Wire.read()<<8|Wire.read(); 
+  	AcY=Wire.read()<<8|Wire.read(); 
+  	AcZ=Wire.read()<<8|Wire.read(); 
+
+    Tmp=Wire.read()<<8|Wire.read();
+
+    GyX=(Wire.read()<<8|Wire.read())/131.0 - gyroXOffset; 
+    GyY=(Wire.read()<<8|Wire.read())/131.0 - gyroYOffset; 
+    GyZ=(Wire.read()<<8|Wire.read())/131.0 - gyroZOffset;
   
-  	int xAng = map(attitude->AcX,minVal,maxVal,-90,90); 
-  	int yAng = map(attitude->AcY,minVal,maxVal,-90,90); 
-  	int zAng = map(attitude->AcZ,minVal,maxVal,-90,90);
+  	int xAng = map(AcX,minVal,maxVal,-90,90); 
+  	int yAng = map(AcY,minVal,maxVal,-90,90); 
+  	int zAng = map(AcZ,minVal,maxVal,-90,90);
 
   	// Calculating Angles
-  	attitude->rroll = RAD_TO_DEG * (atan2(-yAng, -zAng)+PI); 
-  	attitude->rpitch = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI); 
-    
-    // Formatting angles
-    attitude->rpitch += 90; // To center the value around 90°
-    if (attitude->rpitch >= 360) { attitude->rpitch -= 360; }
-    (attitude->instant_angle).pitch = attitude->rpitch;
+  	double accRoll = RAD_TO_DEG * (atan2(-yAng, -zAng)+PI); 
+  	double accPitch = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI);
 
-    attitude->rroll += 90;
-    if (attitude->rroll >= 360) { attitude->rroll -= 360; }
-    (attitude->instant_angle).roll = attitude->rroll;
+    accRoll += 90; // To center the value around 90°
+    if (accRoll >= 360) { accRoll -= 360; }
+
+    accPitch += 90;
+    if (accPitch >= 360) { accPitch -= 360; }
+
+    double delta_time = (double)(micros() - last_time_capture) / 1000000;
+    last_time_capture = micros();
+
+    // Implementing a complementary filter
+    pitch = 0.98 * ( pitch + GyY * delta_time ) + 0.02 * accPitch;
+    roll = 0.98 * ( roll + GyX * delta_time ) + 0.02 * accRoll;
 
 }
 
-void updateMeanAngle (Attitude *attitude){
-    updateInstantAttitude(attitude);
-    addNewAngle(&(attitude->history), attitude->instant_angle);
-    attitude->angle = getMeanAngle(&(attitude->history));
+void ImuSensor::loadGyroOffsets () {
+    gyroXOffset = readEepromDouble(GYRO_X_OFFSET_LOCATION);
+    gyroYOffset = readEepromDouble(GYRO_Y_OFFSET_LOCATION);
+    gyroZOffset = readEepromDouble(GYRO_Z_OFFSET_LOCATION);
+}
+
+void ImuSensor::calibrateGyroOffsets () {
+
+    Serial.println(CALIBRATION_BEGINNING_CODE);
+
+    // Resetting present values
+    writeEepromDouble(GYRO_X_OFFSET_LOCATION,0.00);
+    writeEepromDouble(GYRO_Y_OFFSET_LOCATION,0.00);
+    writeEepromDouble(GYRO_Z_OFFSET_LOCATION,0.00);
+    loadGyroOffsets();
+
+    double alpha_gyx = 0;
+    double alpha_gyy = 0;
+    double alpha_gyz = 0;
+
+    for (short i = 0; i < CALIBRATION_TICK_NUMBER; i++) {
+        tick();
+        alpha_gyx += GyX;
+        alpha_gyy += GyY;
+        alpha_gyz += GyZ;
+        wdt_reset(); // to prevent him to start
+        delay(1);
+    }
+
+    alpha_gyx /= CALIBRATION_TICK_NUMBER;
+    alpha_gyy /= CALIBRATION_TICK_NUMBER;
+    alpha_gyz /= CALIBRATION_TICK_NUMBER;
+
+    writeEepromDouble(GYRO_X_OFFSET_LOCATION,alpha_gyx);
+    writeEepromDouble(GYRO_Y_OFFSET_LOCATION,alpha_gyy);
+    writeEepromDouble(GYRO_Z_OFFSET_LOCATION,alpha_gyz);
+
+    loadGyroOffsets();
+
+    Serial.println(CALIBRATION_SUCCESS_CODE);
+
+}
+
+void ImuSensor::printAttitude() {
+    Serial.print(pitch);
+    Serial.print(",");
+    Serial.print(roll);
+    Serial.println();
 }

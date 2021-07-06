@@ -19,6 +19,17 @@
 /********************* MPU *********************/
 #define MPU_ADDR 0x68
 
+#define SERIAL_GET_ATTITUDE_COMMAND "attitude"
+
+#define GYRO_X_OFFSET_LOCATION 0x10
+#define GYRO_Y_OFFSET_LOCATION GYRO_X_OFFSET_LOCATION + 0x4 // Because a double is 4 bytes long (atmega328)
+#define GYRO_Z_OFFSET_LOCATION GYRO_Y_OFFSET_LOCATION + 0x4
+
+#define CALIBRATION_TICK_NUMBER 1000
+#define CALIBRATION_BEGINNING_CODE "calibration_start"
+#define CALIBRATION_SUCCESS_CODE "calibration_success"
+#define SERIAL_CALIBRATION_COMMAND "calibrate gyroscope"
+
 /********************* COMMANDS *********************/
 #define SERVO1_PIN 10
 #define SERVO2_PIN 11
@@ -47,9 +58,5 @@
 /********************* WATCHDOG *********************/
 #define WDTO_TIME WDTO_60MS
 
-/********************* DEBUG MODE *********************/
-// #define ENABLE_DEBUG
-
-    /******* ANGLE *******/
-    // #define PRINT_INSTANT_ANGLE
-    // #define PRINT_MEAN_ANGLE
+/********************* SERIAL *********************/
+#define SERIAL_INVALID_INPUT_RESPONSE "error : invalid response"
