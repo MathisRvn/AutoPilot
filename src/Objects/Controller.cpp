@@ -3,7 +3,7 @@
 
 #include "config.h"
 #include "./PID.h"
-#include "Attitude.h"
+#include "./Board/Attitude.h"
 
 #include "./Controller.h"
 

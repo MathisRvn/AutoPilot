@@ -1,8 +1,8 @@
 #include <Servo.h>
 
-#include "./Receiver.h"
+#include "./Board/Receiver.h"
 #include "./PID.h"
-#include "./Attitude.h"
+#include "./Board/Attitude.h"
 
 #ifndef CONTROLLER_H
     #define CONTROLLER_H

@@ -1,6 +1,6 @@
 #include "config.h"
 
-#include "./Objects/Receiver.h"
+#include "./Objects/Board/Receiver.h"
 
 #include "setUpReceiverChannels.h"
 

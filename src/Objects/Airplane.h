@@ -1,18 +1,34 @@
 #include <Servo.h>
 
+#include "./Board/Board.h"
+
 #ifndef AIRPLANE_H
     #define ACTUATORS_H
 
-    typedef struct Airplane {
+    class Airplane {
 
-        Servo aileronServo;
-        Servo elevatorServo;
-        Servo throttleServo;
-        Servo rudderServo;
+        public:
+        
+            Servo aileronServo;
+            Servo elevatorServo;
+            Servo throttleServo;
+            Servo rudderServo;
 
+            Board board;
 
-    } Airplane;
+            double *pitchPt, *rollPt;
+            double pitch, roll;
 
-    void initAirplane (Airplane *airplane);
+            uint8_t pitchCoef;
+            uint8_t rollCoef;
+
+            Airplane();
+
+            void tick ();
+
+            void getPitch();
+            void getRoll();
+
+    };
 
 #endif

@@ -2,20 +2,22 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
 
-#include "../config.h"
+#include "../../config.h"
+#include "../../memoryConfig.h"
 #include "./EEPROM_.h"
 
 #include "./Attitude.h"
 
-void ImuSensor::init() {
+ImuSensor::ImuSensor() {
 
     Wire.beginTransmission(MPU_ADDR); 
     Wire.write(0x6B); 
     Wire.write(0); 
     Wire.endTransmission(true);
 
-    pitch = 90;
-    roll = 90;
+    x = 90;
+    y = 90;
+    z = 90;
 
     loadGyroOffsets();
 
@@ -47,21 +49,26 @@ void ImuSensor::tick () {
   	int zAng = map(AcZ,minVal,maxVal,-90,90);
 
   	// Calculating Angles
-  	double accRoll = RAD_TO_DEG * (atan2(-yAng, -zAng)+PI); 
-  	double accPitch = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI);
+  	double accX = RAD_TO_DEG * (atan2(-yAng, -zAng)+PI); 
+  	double accY = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI);
+    double accZ = RAD_TO_DEG * (atan2(-yAng, -xAng)+PI);
 
-    accRoll += 90; // To center the value around 90°
-    if (accRoll >= 360) { accRoll -= 360; }
+    accX += 90; // To center the value around 90°
+    if (accX >= 360) { accX -= 360; }
 
-    accPitch += 90;
-    if (accPitch >= 360) { accPitch -= 360; }
+    accY += 90;
+    if (accY >= 360) { accY -= 360; }
+
+    accZ += 90;
+    if (accZ >= 360) { accZ -= 360; }
 
     double delta_time = (double)(micros() - last_time_capture) / 1000000;
     last_time_capture = micros();
 
     // Implementing a complementary filter
-    pitch = 0.98 * ( pitch + GyY * delta_time ) + 0.02 * accPitch;
-    roll = 0.98 * ( roll + GyX * delta_time ) + 0.02 * accRoll;
+    x = 0.98 * ( x + GyY * delta_time ) + 0.02 * accX;
+    y = 0.98 * ( y + GyX * delta_time ) + 0.02 * accY;
+    z = 0.98 * ( z + GyX * delta_time ) + 0.02 * accZ;
 
 }
 
@@ -72,8 +79,6 @@ void ImuSensor::loadGyroOffsets () {
 }
 
 void ImuSensor::calibrateGyroOffsets () {
-
-    Serial.println(CALIBRATION_BEGINNING_CODE);
 
     // Resetting present values
     writeEepromDouble(GYRO_X_OFFSET_LOCATION,0.00);
@@ -104,13 +109,15 @@ void ImuSensor::calibrateGyroOffsets () {
 
     loadGyroOffsets();
 
-    Serial.println(CALIBRATION_SUCCESS_CODE);
-
 }
 
-void ImuSensor::printAttitude() {
-    Serial.print(pitch);
-    Serial.print(",");
-    Serial.print(roll);
-    Serial.println();
-}
+#ifdef ENABLE_DEBUG
+    void ImuSensor::printAttitude() {
+        Serial.print(x);
+        Serial.print(",");
+        Serial.print(y);
+        Serial.print(",");
+        Serial.print(z);
+        Serial.println();
+    }
+#endif

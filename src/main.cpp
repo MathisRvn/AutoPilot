@@ -4,40 +4,28 @@
 
 #include "./config.h"
 
-#include "./Objects/Attitude.h"
+#include "./Objects/Board/Attitude.h"
 #include "./Objects/Airplane.h"
 #include "./Objects/Led.h"
-#include "./Objects/Receiver.h"
+#include "./Objects/Board/Receiver.h"
 #include "./Objects/PID.h"
 #include "./Objects/Controller.h"
+#include "./Objects/Board/Board.h"
 
 #include "./setUpReceiverChannels.h"
 
-ImuSensor imuSensor;
-Airplane airplane;
-Led boardLed(BOARD_LED_PIN, LED_SLOW_BLINK);
 
-PID aileron_PID(2, 0.5, 90, 90);
-Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
 
-PID elevator_PID(2, 0.5, 90, 90);
-Controller elevatorController(&(airplane.elevatorServo), &elevatorReceiver, INPUT_COPY, &elevator_PID);
 
-Controller throttleController(&(airplane.throttleServo), &throttleReceiver, INPUT_COPY);
 
-Controller rudderController(&(airplane.rudderServo), &rudderReceiver, INPUT_COPY);
-
-ReceiverSwitch switch1(&switch1Receiver);
-ReceiverSwitch switch2(&switch2Receiver);
 
 void setup() {
 
-	Serial.begin(9600);
+	#ifdef ENABLE_DEBUG
+		Serial.begin(9600);
+	#endif
+
 	Wire.begin();
-
-	imuSensor.init();
-
-  	initAirplane(&airplane);
 
 	wdt_enable(WDTO_TIME);
 	
@@ -45,9 +33,24 @@ void setup() {
 
 void loop() {
 
-  	boardLed.tickLed();
+	static Airplane airplane;
 
-  	imuSensor.tick();
+	static PID aileron_PID(2, 0.5, 90, 90);
+	static Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
+
+	static PID elevator_PID(2, 0.5, 90, 90);
+	static Controller elevatorController(&(airplane.elevatorServo), &elevatorReceiver, INPUT_COPY, &elevator_PID);
+
+	static Controller throttleController(&(airplane.throttleServo), &throttleReceiver, INPUT_COPY);
+
+	static Controller rudderController(&(airplane.rudderServo), &rudderReceiver, INPUT_COPY);
+
+	static ReceiverSwitch switch1(&switch1Receiver);
+	static ReceiverSwitch switch2(&switch2Receiver);
+
+  	airplane.board.infoLed.tickLed();
+
+  	airplane.board.imuSensor.tick();
 
 	switch1.checkMode();
 	switch2.checkMode();
@@ -64,26 +67,13 @@ void loop() {
 		aileronController.mode = INPUT_COPY;
 	}
 
-	aileronController.tick(imuSensor.roll);
-	elevatorController.tick(imuSensor.pitch);
+	/*
+	aileronController.tick(board.imuSensor.x);
+	elevatorController.tick(board.imuSensor.y);
 	throttleController.tick();
 	rudderController.tick();
+	*/
 
-/*
-	if (Serial.available() == 0) {
-		String input = Serial.readString();
-		Serial.println(input);
-		
-		if (input == SERIAL_CALIBRATION_COMMAND) {
-			imuSensor.calibrateGyroOffsets();
-		}else if (input == SERIAL_GET_ATTITUDE_COMMAND) {
-			imuSensor.printAttitude();
-		}else{
-			Serial.println(SERIAL_INVALID_INPUT_RESPONSE);
-		}
-
-	}
-*/
 	wdt_reset();
 
 }

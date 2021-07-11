@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <PinChangeInterrupt.h>
 
-#include "Receiver.h"
+#include "./Receiver.h"
 
 ReceiverPwmChannel::ReceiverPwmChannel (int initial_pin, void(*callback)(void)) {
     pin = initial_pin;

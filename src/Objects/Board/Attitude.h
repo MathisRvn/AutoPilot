@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "../config.h"
+#include "../../config.h"
 
 #ifndef ATTITUDE_H
     #define ATTITUDE_H
@@ -12,13 +12,16 @@
             int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
             double gyroXOffset, gyroYOffset, gyroZOffset;
             unsigned long last_time_capture;
-            double pitch, roll;
+            double x, y, z;
 
-            void init();
+            ImuSensor();
             void tick();
             void loadGyroOffsets ();
             void calibrateGyroOffsets ();
-            void printAttitude();
+
+            #ifdef ENABLE_DEBUG
+                void printAttitude();
+            #endif
 
    };
 

@@ -1,40 +1,25 @@
 #include <avr/wdt.h>
 
-/********************* PROGRAM INFO *********************/
-#define VERSION 1.0-dev
-#define AUTHOR Mathis REVENU
-
 /********************* RECEIVER *********************/
-#define AILERON_INPUT 9
-#define ELEVATOR_INPUT 9
-#define THROTTLE_INPUT 9
-#define RUDDER_INPUT 9
-#define SWITCH1_INPUT 9
-#define SWITCH2_INPUT 9
-
-/********************* ANGLE *********************/
-// Number of value taken in count to remove noise from vivration
-#define ANGLE_HISTORY_TO_MEAN 10
+#define AILERON_INPUT 14
+#define ELEVATOR_INPUT 15
+#define THROTTLE_INPUT 16
+#define RUDDER_INPUT 17
+#define SWITCH1_INPUT 8
+#define SWITCH2_INPUT 7
 
 /********************* MPU *********************/
 #define MPU_ADDR 0x68
 
-#define SERIAL_GET_ATTITUDE_COMMAND "attitude"
-
-#define GYRO_X_OFFSET_LOCATION 0x10
-#define GYRO_Y_OFFSET_LOCATION GYRO_X_OFFSET_LOCATION + 0x4 // Because a double is 4 bytes long (atmega328)
-#define GYRO_Z_OFFSET_LOCATION GYRO_Y_OFFSET_LOCATION + 0x4
-
 #define CALIBRATION_TICK_NUMBER 1000
 #define CALIBRATION_BEGINNING_CODE "calibration_start"
 #define CALIBRATION_SUCCESS_CODE "calibration_success"
-#define SERIAL_CALIBRATION_COMMAND "calibrate gyroscope"
 
 /********************* COMMANDS *********************/
-#define SERVO1_PIN 10
-#define SERVO2_PIN 11
-#define SERVO3_PIN 12
-#define SERVO4_PIN 13
+#define SERVO1_PIN 5
+#define SERVO2_PIN 6
+#define SERVO3_PIN 9
+#define SERVO4_PIN 10
 
 #define SERVO_MAX_CLEARANCE 45 // output servo via controller is 90-SERVO_MAX_CLEARANCE < out < 90+SERVO_MAX_CLEARANCE
 
@@ -49,7 +34,7 @@
 #define RUDDER_SERVO_PIN SERVO4_PIN
 
 /********************* LED *********************/
-#define BOARD_LED_PIN 7
+#define BOARD_LED_PIN 11
 
 // mode config
 #define SLOW_BLINK_FREQUENCY 1000 // = half-period
@@ -58,5 +43,5 @@
 /********************* WATCHDOG *********************/
 #define WDTO_TIME WDTO_60MS
 
-/********************* SERIAL *********************/
-#define SERIAL_INVALID_INPUT_RESPONSE "error : invalid response"
+/********************* DEBUG *********************/
+// #define ENABLE_DEBUG
