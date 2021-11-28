@@ -1,3 +1,5 @@
+// TODO : Refaire le code de la partie lecture du MPU6050 avec l'aide du DMP
+
 #include <Arduino.h>
 
 #include "../../config.h"

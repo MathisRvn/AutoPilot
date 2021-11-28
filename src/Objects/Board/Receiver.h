@@ -1,3 +1,5 @@
+// TODO : Refaire le code de la partie recepetion
+
 #ifndef RECEIVER_H
     #define RECEIVER_H
 
