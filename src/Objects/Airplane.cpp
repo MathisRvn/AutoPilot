@@ -5,23 +5,19 @@
 #include "../memoryConfig.h"
 #include "./Board/Board.h"
 #include "../error.h"
+#include "./Receiver.h"
 
 #include "./Airplane.h"
 
-Airplane::Airplane () {
+Airplane::Airplane (Receiver *initial_receiver) {
 
-    pinMode(AILERON_SERVO_PIN, OUTPUT);
-    aileronServo.attach(AILERON_SERVO_PIN);
+    receiver = initial_receiver;
 
-    pinMode(ELEVATOR_SERVO_PIN, OUTPUT);
-    elevatorServo.attach(ELEVATOR_SERVO_PIN);
+    pinMode(LEFT_AILERON_SERVO_PIN, OUTPUT);
+    leftAileronServo.attach(LEFT_AILERON_SERVO_PIN);
 
-    pinMode(THROTTLE_SERVO_PIN, OUTPUT);
-    throttleServo.attach(THROTTLE_SERVO_PIN);
-
-    pinMode(RUDDER_SERVO_PIN, OUTPUT);
-    rudderServo.attach(RUDDER_SERVO_PIN);
-
+    pinMode(RIGHT_AILERON_SERVO_PIN, OUTPUT);
+    rightAileronServo.attach(RIGHT_AILERON_SERVO_PIN);
 
     // Binding the airplane attitude with the board attitude
     byte pitch_axis_reference = EEPROM.read(PITCH_AXIS_REFERENCE_LOCATION);

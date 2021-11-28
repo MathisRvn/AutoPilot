@@ -7,16 +7,16 @@
 #include "./Objects/Board/Attitude.h"
 #include "./Objects/Airplane.h"
 #include "./Objects/Led.h"
-#include "./Objects/Board/Receiver.h"
 #include "./Objects/PID.h"
-#include "./Objects/Controller.h"
+// #include "./Objects/Controller.h"
 #include "./Objects/Board/Board.h"
 
-#include "./setUpReceiverChannels.h"
-
-
-
-
+#include "./Objects/Receiver.h"
+void receiverInterrupt(); // Because we use an object, wa have to create this intermediate function
+Receiver receiver(RECEIVER_PIN, receiverInterrupt);
+void receiverInterrupt() {
+	receiver.interruptCallback();
+}
 
 
 void setup() {
@@ -33,7 +33,9 @@ void setup() {
 
 void loop() {
 
-	static Airplane airplane;
+	static Airplane airplane(&receiver);
+
+	/*
 
 	static PID aileron_PID(2, 0.5, 90, 90);
 	static Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
