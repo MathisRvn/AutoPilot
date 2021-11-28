@@ -14,7 +14,7 @@
         pin = initial_pin;
         last_time_receiver_fall = micros();
         pinMode(pin, INPUT);
-        attachPCINT(digitalPinToPCINT(pin), callback, CHANGE);
+        attachPCINT(digitalPinToPCINT(pin), callback, RISING);
     }
 
 #endif

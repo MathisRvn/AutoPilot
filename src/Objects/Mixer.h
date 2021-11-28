@@ -6,11 +6,16 @@
     class Mixer {
 
         public:
+
             Servo *servo;
-            // TODO : Implement functions
+
+            int output = 0;
+
+            Mixer(Servo *initial_servo);
+            void tick(int axis1, int axis2);
 
     };
 
-    double microseconds_to_deg (unsigned long microseconds);
+    int microseconds_to_deg (int microseconds);
 
 #endif

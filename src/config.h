@@ -36,4 +36,4 @@
 
 /********************* DEBUG *********************/
 #define ENABLE_DEBUG
-// #define PRINT_RECEIVER_INPUT
+// #define DEBUG_PRINT_RECEIVER_INPUT

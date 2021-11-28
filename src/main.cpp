@@ -4,12 +4,10 @@
 
 #include "./config.h"
 
-#include "./Objects/Board/Attitude.h"
 #include "./Objects/Airplane.h"
 #include "./Objects/Led.h"
 #include "./Objects/PID.h"
-// #include "./Objects/Controller.h"
-#include "./Objects/Board/Board.h"
+#include "./Objects/Mixer.h"
 
 #include "./Objects/Receiver.h"
 void receiverInterrupt(); // Because we use an object, wa have to create this intermediate function
@@ -35,10 +33,17 @@ void setup() {
 void loop() {
 
 	static Airplane airplane(&receiver);
+	static Mixer leftAileronMixer(&(airplane.leftAileronServo));
+	static Mixer rightAileronMixer(&(airplane.rightAileronServo));
 
 	#ifdef DEBUG_PRINT_RECEIVER_INPUT
-		receiver.print();
+		airplane.receiver->print();
 	#endif
+
+	leftAileronMixer.tick(airplane.receiver->ch[0], airplane.receiver->ch[1]);
+	rightAileronMixer.tick(airplane.receiver->ch[0], airplane.receiver->ch[1]);
+
+	airplane.board.infoLed.tickLed();
 
 	/*
 
@@ -54,8 +59,6 @@ void loop() {
 
 	static ReceiverSwitch switch1(&switch1Receiver);
 	static ReceiverSwitch switch2(&switch2Receiver);
-
-  	airplane.board.infoLed.tickLed();
 
   	airplane.board.imuSensor.tick();
 
