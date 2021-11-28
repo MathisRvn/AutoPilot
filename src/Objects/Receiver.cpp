@@ -33,3 +33,23 @@ void Receiver::interruptCallback(void) {
         }  
     }
 }
+
+
+#ifdef DEBUG_PRINT_RECEIVER_INPUT
+    void Receiver::print(void) {
+
+        Serial.print(ch[0]);
+        Serial.print(',');
+        Serial.print(ch[1]);
+        Serial.print(',');
+        Serial.print(ch[2]);
+        Serial.print(',');
+        Serial.print(ch[3]);
+        Serial.print(',');
+        Serial.print(ch[4]);
+        Serial.print(',');
+        Serial.print(ch[5]);
+        Serial.println();
+
+    };
+#endif

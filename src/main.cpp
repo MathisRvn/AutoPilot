@@ -23,6 +23,7 @@ void setup() {
 
 	#ifdef ENABLE_DEBUG
 		Serial.begin(9600);
+		Serial.println("DEBUG ENABLED");
 	#endif
 
 	Wire.begin();
@@ -34,6 +35,10 @@ void setup() {
 void loop() {
 
 	static Airplane airplane(&receiver);
+
+	#ifdef DEBUG_PRINT_RECEIVER_INPUT
+		receiver.print();
+	#endif
 
 	/*
 
@@ -68,7 +73,7 @@ void loop() {
 	}else{
 		aileronController.mode = INPUT_COPY;
 	}
-
+*/
 	/*
 	aileronController.tick(board.imuSensor.x);
 	elevatorController.tick(board.imuSensor.y);
