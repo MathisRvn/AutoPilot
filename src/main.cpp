@@ -49,6 +49,10 @@ void loop() {
 	static int pitch_command = 1500;
 	static int roll_command = 1500;
 
+	// TODO : ajouter un mode enregistrement des données et un mode control de vol
+
+	// TODO : ajouter synchro moteur permanente
+
 	if (ControlMode == OFF) {
 		pitch_command = 1500;
 		roll_command = 1500;
