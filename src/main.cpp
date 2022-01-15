@@ -17,6 +17,12 @@ void receiverInterrupt() {
 }
 
 
+typedef enum ModeType { 
+        COPY, STABILIZER, OFF
+} ModeType;
+
+ModeType ControlMode = OFF;
+
 void setup() {
 
 	#ifdef ENABLE_DEBUG
@@ -40,49 +46,32 @@ void loop() {
 		airplane.receiver->print();
 	#endif
 
-	leftAileronMixer.tick(airplane.receiver->ch[0], airplane.receiver->ch[1]);
-	rightAileronMixer.tick(airplane.receiver->ch[0], airplane.receiver->ch[1]);
+	static int pitch_command = 1500;
+	static int roll_command = 1500;
+
+	if (ControlMode == OFF) {
+		pitch_command = 1500;
+		roll_command = 1500;
+	} else if (ControlMode == STABILIZER) {
+		// TODO : A changer -> ajouter control PID
+		pitch_command = 1500;
+		roll_command = 1500;
+	} else {
+		pitch_command = airplane.receiver->ch[1];
+		roll_command = airplane.receiver->ch[0];
+	}
+	
+
+	leftAileronMixer.tick(roll_command, pitch_command);
+	rightAileronMixer.tick(roll_command, pitch_command);
 
 	airplane.board.infoLed.tickLed();
 
-	/*
-
-	static PID aileron_PID(2, 0.5, 90, 90);
-	static Controller aileronController(&(airplane.aileronServo), &aileronReceiver, INPUT_COPY, &aileron_PID);
-
-	static PID elevator_PID(2, 0.5, 90, 90);
-	static Controller elevatorController(&(airplane.elevatorServo), &elevatorReceiver, INPUT_COPY, &elevator_PID);
-
-	static Controller throttleController(&(airplane.throttleServo), &throttleReceiver, INPUT_COPY);
-
-	static Controller rudderController(&(airplane.rudderServo), &rudderReceiver, INPUT_COPY);
-
-	static ReceiverSwitch switch1(&switch1Receiver);
-	static ReceiverSwitch switch2(&switch2Receiver);
-
-  	airplane.board.imuSensor.tick();
-
-	switch1.checkMode();
-	switch2.checkMode();
-
-	if (switch1.switchMode == SWITCH_DOWN){
-		elevatorController.mode = PID_CONTROLLER;
-	}else{
-		elevatorController.mode = INPUT_COPY;
-	}
-
-	if (switch2.switchMode == SWITCH_DOWN){
-		aileronController.mode = PID_CONTROLLER;
-	}else{
-		aileronController.mode = INPUT_COPY;
-	}
-*/
-	/*
-	aileronController.tick(board.imuSensor.x);
-	elevatorController.tick(board.imuSensor.y);
-	throttleController.tick();
-	rudderController.tick();
-	*/
+	// TODO : déplacer cette section dans une fonction receiver.tick; typedef ModeType aussi à déplacer
+	// Detecting the mode
+	if (receiver.ch[4] < 700) { ControlMode = OFF; }
+	else if (receiver.ch[4] > 1800) { ControlMode = STABILIZER; }
+	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of SWC
 
 	wdt_reset();
 
