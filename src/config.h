@@ -35,5 +35,5 @@
 #define WDTO_TIME WDTO_60MS
 
 /********************* DEBUG *********************/
-#define ENABLE_DEBUG
+// #define ENABLE_DEBUG
 // #define DEBUG_PRINT_RECEIVER_INPUT

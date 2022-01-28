@@ -21,8 +21,6 @@ void Mixer::tick(int axis1, int axis2) {
         output = SERVO_MAX_CLEARANCE;
     }
 
-    Serial.println(output);
-
     servo->write(output); // Mean of the two inputs
 
 }

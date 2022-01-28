@@ -25,9 +25,10 @@ ModeType ControlMode = OFF;
 
 void setup() {
 
+	Serial.begin(9600);
 	#ifdef ENABLE_DEBUG
-		Serial.begin(9600);
 		Serial.println("DEBUG ENABLED");
+		Serial.println("Starting");
 	#endif
 
 	Wire.begin();
@@ -76,6 +77,40 @@ void loop() {
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
 	else if (receiver.ch[4] > 1800) { ControlMode = STABILIZER; }
 	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of SWC
+
+
+	// Reading and responding to command
+	/*
+	For the protocol, check desktop app doc
+	*/
+
+	
+	static char msg[3];
+	static short i = 0;
+
+	if (Serial.available()) {
+
+		delay(10); // Waiting to receive all the data
+		
+		for (i = 0; i < 3; i++){
+		msg[i] = Serial.read();
+		}
+
+		// Clearing the buffer
+		while (Serial.available()) { Serial.read(); }
+		
+		if (memcmp(msg, "pin", 3) == 0) {
+			Serial.println("pong");
+		}else if(memcmp(msg, "att", 3) == 0) {
+			// TODO: reply attitude
+			Serial.println("Attitude");
+		}else if (memcmp(msg, "cmd", 3) == 0) {
+			// TODO: reply radio input
+			Serial.println("Command");
+		}
+		
+	
+	}
 
 	wdt_reset();
 
