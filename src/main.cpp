@@ -108,8 +108,7 @@ void loop() {
 		if (memcmp(msg, "pin", 3) == 0) {
 			Serial.println("pong");
 		}else if(memcmp(msg, "att", 3) == 0) {
-			// TODO: reply attitude
-			Serial.println("Attitude");
+			imuSensor.printAttitude();
 		}else if (memcmp(msg, "cmd", 3) == 0) {
 			// TODO: reply radio input
 			Serial.println("Command");

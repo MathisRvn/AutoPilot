@@ -53,12 +53,14 @@ void ImuSensor::tick () {
 
     }
 
-    // TODO : tester que ca renvoie des valeurs corrects
-
 }
 
-#ifdef ENABLE_DEBUG
-    void ImuSensor::printAttitude() {
-        // TODO: A redevelopper
-    }
-#endif
+void ImuSensor::printAttitude() {
+    Serial.print("Attitude:");
+    Serial.print(ypr[0] * 180 / PI);
+    Serial.print(',');
+    Serial.print(ypr[1] * 180 / PI);
+    Serial.print(',');
+    Serial.print(ypr[2] * 180 / PI);
+    Serial.println();
+}

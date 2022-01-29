@@ -36,9 +36,7 @@
             void init();
             void tick();
 
-            #ifdef ENABLE_DEBUG
-                void printAttitude();
-            #endif
+            void printAttitude();
 
     };
 
