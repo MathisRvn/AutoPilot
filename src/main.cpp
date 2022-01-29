@@ -16,6 +16,8 @@ void receiverInterrupt() {
 	receiver.interruptCallback();
 }
 
+#include "./Objects/Attitude.h"
+ImuSensor imuSensor;
 
 typedef enum ModeType { 
         COPY, STABILIZER, OFF
@@ -28,10 +30,12 @@ void setup() {
 	Serial.begin(9600);
 	#ifdef ENABLE_DEBUG
 		Serial.println("DEBUG ENABLED");
-		Serial.println("Starting");
+		Serial.println("Starting board");
 	#endif
 
 	Wire.begin();
+
+	imuSensor.init();
 
 	wdt_enable(WDTO_TIME);
 	
@@ -42,6 +46,8 @@ void loop() {
 	static Airplane airplane(&receiver);
 	static Mixer leftAileronMixer(&(airplane.leftAileronServo));
 	static Mixer rightAileronMixer(&(airplane.rightAileronServo));
+
+	imuSensor.tick();
 
 	#ifdef DEBUG_PRINT_RECEIVER_INPUT
 		airplane.receiver->print();

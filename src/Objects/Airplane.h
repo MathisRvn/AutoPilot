@@ -2,6 +2,7 @@
 
 #include "./Board/Board.h"
 #include "./Receiver.h"
+#include "./Attitude.h"
 
 #ifndef AIRPLANE_H
     #define ACTUATORS_H
@@ -16,12 +17,6 @@
             Board board;
 
             Receiver *receiver;
-
-            double *pitchPt, *rollPt;
-            double pitch, roll;
-
-            uint8_t pitchCoef;
-            uint8_t rollCoef;
 
             Airplane(Receiver *initial_receiver);
 

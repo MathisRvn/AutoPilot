@@ -1,4 +1,3 @@
-#include "./Attitude.h"
 #include "../Led.h"
 
 #include "../../config.h"
@@ -9,7 +8,6 @@
     class Board {
 
         public:
-            ImuSensor imuSensor;
             Led infoLed;
 
             Board() : infoLed(BOARD_LED_PIN, LED_SLOW_BLINK) {};
