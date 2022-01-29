@@ -12,10 +12,7 @@
 
             void interruptCallback(void);
 
-            #ifdef DEBUG_PRINT_RECEIVER_INPUT
-                void print(void);
-            #endif
-
+            void print(void);
     };
 
 #endif

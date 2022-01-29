@@ -78,7 +78,6 @@ void loop() {
 
 	airplane.board.infoLed.tickLed();
 
-	// TODO : déplacer cette section dans une fonction receiver.tick; typedef ModeType aussi à déplacer
 	// Detecting the mode
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
 	else if (receiver.ch[4] > 1800) { ControlMode = STABILIZER; }
@@ -110,8 +109,7 @@ void loop() {
 		}else if(memcmp(msg, "att", 3) == 0) {
 			imuSensor.printAttitude();
 		}else if (memcmp(msg, "cmd", 3) == 0) {
-			// TODO: reply radio input
-			Serial.println("Command");
+			airplane.receiver->print();
 		}
 		
 	
