@@ -11,41 +11,52 @@ ImuSensor::ImuSensor() {}
 void ImuSensor::init () {
 
     mpu.initialize();
-    // TODO : Enlever ce print ! (à part en debug mode)
-    Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
+    if(mpu.testConnection()) {
 
-    devStatus = mpu.dmpInitialize();
+        initialization_success = false;
+        Serial.print("Error: Fail to connect with the MPU6050");
 
-    // supply your own gyro offsets here, scaled for min sensitivity
-    mpu.setXGyroOffset(220);
-    mpu.setYGyroOffset(76);
-    mpu.setZGyroOffset(-85);
-    mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
+    }else{
 
-    if (devStatus == 0) {
+        devStatus = mpu.dmpInitialize();
 
-        mpu.CalibrateAccel(6);
-        mpu.CalibrateGyro(6);
-        mpu.PrintActiveOffsets();
-        // TODO : bouger la phase de calibration dans une autre fonction et enregistrer les valeurs dans la mémoires ?? (automatique directement sur le mpu ?)
+        // supply your own gyro offsets here, scaled for min sensitivity
+        mpu.setXGyroOffset(220);
+        mpu.setYGyroOffset(76);
+        mpu.setZGyroOffset(-85);
+        mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
 
-        mpu.setDMPEnabled(true);
-        mpuIntStatus = mpu.getIntStatus();
-        dmpReady = true;
-        packetSize = mpu.dmpGetFIFOPacketSize();
+        if (devStatus == 0) {
 
-    } else {
-		// TODO : gérer mieux l'erreur : empécher le programme de démarrer
-        Serial.print(F("DMP Initialization failed (code "));
-        Serial.print(devStatus);
-        Serial.println(F(")"));
+            mpu.CalibrateAccel(6);
+            mpu.CalibrateGyro(6);
+            mpu.PrintActiveOffsets();
+            // TODO : bouger la phase de calibration dans une autre fonction et enregistrer les valeurs dans la mémoires ?? (automatique directement sur le mpu ?)
+
+            mpu.setDMPEnabled(true);
+            mpuIntStatus = mpu.getIntStatus();
+            dmpReady = true;
+            packetSize = mpu.dmpGetFIFOPacketSize();
+            initialization_success = true;
+
+        } else {
+
+            initialization_success = false;
+            
+            Serial.print(F("Error: DMP Initialization failed (code "));
+            Serial.print(devStatus);
+            Serial.println(F(")"));
+
+        }
     }
+
+    
 
 }
 
 void ImuSensor::tick () {
 
-    if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {
+    if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer) && initialization_success == true) {
 
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);

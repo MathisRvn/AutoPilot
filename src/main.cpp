@@ -49,10 +49,6 @@ void loop() {
 
 	imuSensor.tick();
 
-	#ifdef DEBUG_PRINT_RECEIVER_INPUT
-		airplane.receiver->print();
-	#endif
-
 	static int pitch_command = 1500;
 	static int roll_command = 1500;
 
@@ -63,7 +59,7 @@ void loop() {
 	if (ControlMode == OFF) {
 		pitch_command = 1500;
 		roll_command = 1500;
-	} else if (ControlMode == STABILIZER) {
+	} else if (ControlMode == STABILIZER && imuSensor.initialization_success == true) {
 		// TODO : A changer -> ajouter control PID
 		pitch_command = 1500;
 		roll_command = 1500;
@@ -80,7 +76,7 @@ void loop() {
 
 	// Detecting the mode
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
-	else if (receiver.ch[4] > 1800) { ControlMode = STABILIZER; }
+	else if (receiver.ch[4] > 1800  && imuSensor.initialization_success == true) { ControlMode = STABILIZER; }
 	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of SWC
 
 
