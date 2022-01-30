@@ -76,7 +76,7 @@ void loop() {
 	leftAileronMixer.tick(roll_command, pitch_command);
 	rightAileronMixer.tick(roll_command, pitch_command);
 
-	airplane.board.infoLed.tickLed();
+	airplane.infoLed.tickLed();
 
 	// Detecting the mode
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }

@@ -2,13 +2,13 @@
 
 #include "../config.h"
 #include "../memoryConfig.h"
-#include "./Board/Board.h"
 #include "./Attitude.h"
 #include "./Receiver.h"
 
 #include "./Airplane.h"
 
-Airplane::Airplane (Receiver *initial_receiver) {
+Airplane::Airplane (Receiver *initial_receiver) : infoLed(BOARD_LED_PIN, LED_SLOW_BLINK)
+{
 
     receiver = initial_receiver;
 

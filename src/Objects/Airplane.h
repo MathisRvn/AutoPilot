@@ -1,8 +1,9 @@
 #include <Servo.h>
 
-#include "./Board/Board.h"
+#include "../config.h"
 #include "./Receiver.h"
 #include "./Attitude.h"
+#include "./Led.h"
 
 #ifndef AIRPLANE_H
     #define ACTUATORS_H
@@ -14,9 +15,9 @@
             Servo leftAileronServo;
             Servo rightAileronServo;
 
-            Board board;
-
             Receiver *receiver;
+
+            Led infoLed;
 
             Airplane(Receiver *initial_receiver);
 
