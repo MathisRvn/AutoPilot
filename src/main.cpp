@@ -155,6 +155,8 @@ void loop() {
 			Serial.print(roll_command);
 			Serial.println();
 
+		}else if (memcmp(msg, "cal", 3) == 0) {
+			imuSensor.calibrate();
 		}
 		
 	

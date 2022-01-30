@@ -36,6 +36,9 @@
 
             ImuSensor();
             void init();
+
+            void calibrate();
+
             void tick();
 
             void printAttitude();

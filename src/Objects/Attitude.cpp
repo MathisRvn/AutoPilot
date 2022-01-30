@@ -20,6 +20,7 @@ void ImuSensor::init () {
 
         devStatus = mpu.dmpInitialize();
 
+        // TODO : déterminer les bons offsets
         // supply your own gyro offsets here, scaled for min sensitivity
         mpu.setXGyroOffset(220);
         mpu.setYGyroOffset(76);
@@ -27,11 +28,6 @@ void ImuSensor::init () {
         mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
 
         if (devStatus == 0) {
-
-            mpu.CalibrateAccel(6);
-            mpu.CalibrateGyro(6);
-            mpu.PrintActiveOffsets();
-            // TODO : bouger la phase de calibration dans une autre fonction et enregistrer les valeurs dans la mémoires ?? (automatique directement sur le mpu ?)
 
             mpu.setDMPEnabled(true);
             mpuIntStatus = mpu.getIntStatus();
@@ -52,6 +48,16 @@ void ImuSensor::init () {
 
     
 
+}
+
+void ImuSensor::calibrate () {
+
+    wdt_disable();
+    Serial.println("Début de la calibration");
+    mpu.CalibrateAccel(6);
+    mpu.CalibrateGyro(6);
+    mpu.PrintActiveOffsets();
+    wdt_enable(WDTO_TIME);
 }
 
 void ImuSensor::tick () {
