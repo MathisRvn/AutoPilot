@@ -36,7 +36,7 @@ void Receiver::interruptCallback(void) {
 
 void Receiver::print(void) {
 
-    Serial.print("Radio:");
+    Serial.print("Cmd:");
     Serial.print(ch[0]);
     Serial.print(',');
     Serial.print(ch[1]);

@@ -11,10 +11,10 @@ ImuSensor::ImuSensor() {}
 void ImuSensor::init () {
 
     mpu.initialize();
-    if(mpu.testConnection()) {
+    if(!mpu.testConnection()) {
 
         initialization_success = false;
-        Serial.print("Error: Fail to connect with the MPU6050");
+        Serial.println("Err:Fail to connect with the MPU6050");
 
     }else{
 
@@ -42,8 +42,8 @@ void ImuSensor::init () {
         } else {
 
             initialization_success = false;
-            
-            Serial.print(F("Error: DMP Initialization failed (code "));
+
+            Serial.print(F("Err:DMP Initialization failed (code "));
             Serial.print(devStatus);
             Serial.println(F(")"));
 
@@ -67,7 +67,7 @@ void ImuSensor::tick () {
 }
 
 void ImuSensor::printAttitude() {
-    Serial.print("Attitude:");
+    Serial.print("Att:");
     Serial.print(ypr[0] * 180 / PI);
     Serial.print(',');
     Serial.print(ypr[1] * 180 / PI);

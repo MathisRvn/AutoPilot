@@ -47,6 +47,9 @@ void loop() {
 	static Mixer leftAileronMixer(&(airplane.leftAileronServo));
 	static Mixer rightAileronMixer(&(airplane.rightAileronServo));
 
+	static PID PitchPIDController(1, 0.2, 1500, 1500);
+	static PID RollPIDController(1, 0.2, 1500, 1500);
+
 	imuSensor.tick();
 
 	static int pitch_command = 1500;
@@ -56,13 +59,31 @@ void loop() {
 
 	// TODO : ajouter synchro moteur permanente
 
+	static float pitch_map, roll_map;
+
 	if (ControlMode == OFF) {
 		pitch_command = 1500;
 		roll_command = 1500;
 	} else if (ControlMode == STABILIZER && imuSensor.initialization_success == true) {
+
 		// TODO : A changer -> ajouter control PID
-		pitch_command = 1500;
-		roll_command = 1500;
+
+		// To map from -pi < pitch < pi to 1000 < pitch_map < 2000
+		pitch_map = 1500.0 + (float)(500.0 * imuSensor.ypr[1] / PI);
+		roll_map = 1500.0 + (float)(500.0 * imuSensor.ypr[2] / PI);
+
+		/* TODO : Verifier si c'est des valeurs cohérentes
+		Serial.print(pitch_map);
+		Serial.print(',');
+		Serial.print(roll_map);
+		Serial.println();
+		*/
+
+		pitch_command = (int)PitchPIDController.output(airplane.receiver->ch[1], pitch_map);
+		roll_command = (int)RollPIDController.output(airplane.receiver->ch[0], roll_map);
+
+		// TODO : Verifier si c'est des valeurs cohérentes
+
 	} else {
 		pitch_command = airplane.receiver->ch[1];
 		roll_command = airplane.receiver->ch[0];
@@ -76,7 +97,13 @@ void loop() {
 
 	// Detecting the mode
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
-	else if (receiver.ch[4] > 1800  && imuSensor.initialization_success == true) { ControlMode = STABILIZER; }
+	else if (receiver.ch[4] > 1800  && imuSensor.initialization_success == true) { 
+		if (ControlMode != STABILIZER) { // Resetting PID controllers
+			PitchPIDController.output(1500, 1500);
+			RollPIDController.output(1500, 1500);
+		}
+		ControlMode = STABILIZER; 
+	}
 	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of SWC
 
 
@@ -101,11 +128,33 @@ void loop() {
 		while (Serial.available()) { Serial.read(); }
 		
 		if (memcmp(msg, "pin", 3) == 0) {
-			Serial.println("pong");
+
+			Serial.println("pon");
+
 		}else if(memcmp(msg, "att", 3) == 0) {
+
 			imuSensor.printAttitude();
+
 		}else if (memcmp(msg, "cmd", 3) == 0) {
+
 			airplane.receiver->print();
+
+		}else if (memcmp(msg, "out", 3) == 0) {
+
+			Serial.print("Out:");
+			Serial.print(leftAileronMixer.output);
+			Serial.print(',');
+			Serial.print(rightAileronMixer.output);
+			Serial.println();
+
+		}else if (memcmp(msg, "axi", 3) == 0){
+
+			Serial.print("Axis:");
+			Serial.print(pitch_command);
+			Serial.print(',');
+			Serial.print(roll_command);
+			Serial.println();
+
 		}
 		
 	
