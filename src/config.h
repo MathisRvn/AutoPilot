@@ -14,6 +14,11 @@
 #define SERVO1_PIN 9
 #define SERVO2_PIN 10
 
+#define MOTOR1_PIN 13
+#define MOTOR2_PIN 14
+
+#define MOTOR_RADIO_CHANNEL 2 // Between 0 and ~5 
+
 #define SERVO_MAX_CLEARANCE 45 // output servo via controller is 90-SERVO_MAX_CLEARANCE < out < 90+SERVO_MAX_CLEARANCE
 
 // servo config

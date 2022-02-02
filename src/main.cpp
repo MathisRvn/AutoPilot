@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
 #include <Wire.h>
+#include <Servo.h>
 
 #include "./config.h"
 
@@ -37,6 +38,9 @@ void setup() {
 
 	imuSensor.init();
 
+	pinMode(MOTOR1_PIN, OUTPUT);
+	pinMode(MOTOR2_PIN, OUTPUT);
+
 	wdt_enable(WDTO_TIME);
 	
 }
@@ -52,12 +56,21 @@ void loop() {
 
 	imuSensor.tick();
 
+	// Apply motors output
+
+	static Servo motor1, motor2;
+	motor1.attach(MOTOR1_PIN);
+	motor2.attach(MOTOR2_PIN);
+
+	// Continuous binding with radio output; Fail safe need to be configure on radio 
+
+	motor1.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
+	motor2.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
+
 	static int pitch_command = 1500;
 	static int roll_command = 1500;
 
 	// TODO : ajouter un mode enregistrement des données et un mode control de vol
-
-	// TODO : ajouter synchro moteur permanente
 
 	static float pitch_map, roll_map;
 
