@@ -5,8 +5,6 @@
 
         public:
 
-            // TODO : utiliser des float à la place
-
             double kp;
             double kd;
 
