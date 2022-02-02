@@ -72,18 +72,17 @@ void loop() {
 
 	// TODO : ajouter un mode enregistrement des données et un mode control de vol
 
-	static float pitch_map, roll_map;
+	static double pitch_map, roll_map;
 
 	if (ControlMode == OFF) {
 		pitch_command = 1500;
 		roll_command = 1500;
 	} else if (ControlMode == STABILIZER && imuSensor.initialization_success == true) {
 
-		// TODO : A changer -> ajouter control PID
 
 		// To map from -pi < pitch < pi to 1000 < pitch_map < 2000
-		pitch_map = 1500.0 + (float)(500.0 * imuSensor.ypr[1] / PI);
-		roll_map = 1500.0 + (float)(500.0 * imuSensor.ypr[2] / PI);
+		pitch_map = 1500.0 + (double)(500.0 * imuSensor.ypr[1] / PI);
+		roll_map = 1500.0 + (double)(500.0 * imuSensor.ypr[2] / PI);
 
 		/* TODO : Verifier si c'est des valeurs cohérentes
 		Serial.print(pitch_map);
