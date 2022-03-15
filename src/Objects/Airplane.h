@@ -1,6 +1,9 @@
 #include <Servo.h>
 
-#include "./Board/Board.h"
+#include "../config.h"
+#include "./Receiver.h"
+#include "./Attitude.h"
+#include "./Led.h"
 
 #ifndef AIRPLANE_H
     #define ACTUATORS_H
@@ -9,20 +12,14 @@
 
         public:
         
-            Servo aileronServo;
-            Servo elevatorServo;
-            Servo throttleServo;
-            Servo rudderServo;
+            Servo leftAileronServo;
+            Servo rightAileronServo;
 
-            Board board;
+            Receiver *receiver;
 
-            double *pitchPt, *rollPt;
-            double pitch, roll;
+            Led infoLed;
 
-            uint8_t pitchCoef;
-            uint8_t rollCoef;
-
-            Airplane();
+            Airplane(Receiver *initial_receiver);
 
             void tick ();
 

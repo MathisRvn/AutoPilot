@@ -1,3 +1,7 @@
+/*
+
+I just keep this as example
+
 #define GYRO_X_OFFSET_LOCATION 0x10
 #define GYRO_Y_OFFSET_LOCATION 0x14 // Because a double is 4 bytes long (atmega328)
 #define GYRO_Z_OFFSET_LOCATION 0x18
@@ -12,3 +16,7 @@
 #define REVERSE 2
 #define REVERSE_PITCH_AXIS_LOCATION 0x24
 #define REVERSE_ROLL_AXIS_LOCATION 0x25
+
+*/
+
+// TODO inplement memory

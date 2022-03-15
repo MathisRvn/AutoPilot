@@ -15,5 +15,5 @@ double PID::output (double target, double current_position) {
     double derivative_error = (error - last_error) / (now - last_tick);
     last_error = error;
     last_tick = now;
-    return kp * error + kd *  derivative_error;
+    return 1500 + kp * error + kd *  derivative_error;
 }
