@@ -14,8 +14,8 @@
 #define SERVO1_PIN 9
 #define SERVO2_PIN 10
 
-#define MOTOR1_PIN 13
-#define MOTOR2_PIN 14
+#define MOTOR1_PIN 5
+#define MOTOR2_PIN 6
 
 #define MOTOR_RADIO_CHANNEL 2 // Between 0 and ~5 
 
