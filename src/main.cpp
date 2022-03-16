@@ -133,15 +133,15 @@ void loop() {
 		delay(10); // Waiting to receive all the data
 		
 		for (i = 0; i < 3; i++){
-		msg[i] = Serial.read();
+			msg[i] = Serial.read();
 		}
 
 		// Clearing the buffer
 		while (Serial.available()) { Serial.read(); }
 		
-		if (memcmp(msg, "pin", 3) == 0) {
+		if (memcmp(msg, "awk", 3) == 0) {
 
-			Serial.println("pon");
+			Serial.println("awk");
 
 		}else if(memcmp(msg, "att", 3) == 0) {
 
