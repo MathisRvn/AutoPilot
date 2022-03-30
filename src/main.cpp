@@ -52,7 +52,7 @@ void setup() {
 
 void loop() {
 
-	static Airplane airplane(&receiver);
+	static Airplane airplane;
 	static Mixer leftAileronMixer(&(airplane.leftAileronServo));
 	static Mixer rightAileronMixer(&(airplane.rightAileronServo));
 
@@ -64,8 +64,8 @@ void loop() {
 
 	// Apply motors output
 	// Continuous binding with radio output; Fail safe need to be configure on radio 
-	motor1.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
-	motor2.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
+	motor1.writeMicroseconds(receiver.ch[MOTOR_RADIO_CHANNEL]);
+	motor2.writeMicroseconds(receiver.ch[MOTOR_RADIO_CHANNEL]);
 
 	static int pitch_command = 1500;
 	static int roll_command = 1500;
@@ -91,14 +91,14 @@ void loop() {
 		Serial.println();
 		*/
 
-		pitch_command = (int)PitchPIDController.output(airplane.receiver->ch[1], pitch_map);
-		roll_command = (int)RollPIDController.output(airplane.receiver->ch[0], roll_map);
+		pitch_command = (int)PitchPIDController.output(receiver.ch[1], pitch_map);
+		roll_command = (int)RollPIDController.output(receiver.ch[0], roll_map);
 
 		// TODO : Verifier si c'est des valeurs cohérentes
 
 	} else {
-		pitch_command = airplane.receiver->filtered[1];
-		roll_command = airplane.receiver->filtered[0];
+		pitch_command = receiver.filtered[1];
+		roll_command = receiver.filtered[0];
 	}
 	
 
@@ -149,7 +149,7 @@ void loop() {
 
 		}else if (memcmp(msg, "cmd", 3) == 0) {
 
-			airplane.receiver->print();
+			receiver.print();
 
 		}else if (memcmp(msg, "out", 3) == 0) {
 

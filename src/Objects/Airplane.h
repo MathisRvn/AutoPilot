@@ -1,7 +1,6 @@
 #include <Servo.h>
 
 #include "../config.h"
-#include "./Receiver.h"
 #include "./Attitude.h"
 #include "./Led.h"
 
@@ -15,11 +14,9 @@
             Servo leftAileronServo;
             Servo rightAileronServo;
 
-            Receiver *receiver;
-
             Led infoLed;
 
-            Airplane(Receiver *initial_receiver);
+            Airplane();
 
             void tick ();
 
