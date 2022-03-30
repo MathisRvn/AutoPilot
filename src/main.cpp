@@ -26,6 +26,8 @@ typedef enum ModeType {
 
 ModeType ControlMode = OFF;
 
+Servo motor1, motor2;
+
 void setup() {
 
 	Serial.begin(9600);
@@ -41,6 +43,9 @@ void setup() {
 	pinMode(MOTOR1_PIN, OUTPUT);
 	pinMode(MOTOR2_PIN, OUTPUT);
 
+	motor1.attach(MOTOR1_PIN);
+	motor2.attach(MOTOR2_PIN);
+
 	wdt_enable(WDTO_TIME);
 	
 }
@@ -55,15 +60,10 @@ void loop() {
 	static PID RollPIDController(1, 0.2, 1500, 1500);
 
 	imuSensor.tick();
+	receiver.tick();
 
 	// Apply motors output
-
-	static Servo motor1, motor2;
-	motor1.attach(MOTOR1_PIN);
-	motor2.attach(MOTOR2_PIN);
-
 	// Continuous binding with radio output; Fail safe need to be configure on radio 
-
 	motor1.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
 	motor2.writeMicroseconds(airplane.receiver->ch[MOTOR_RADIO_CHANNEL]);
 
@@ -97,8 +97,8 @@ void loop() {
 		// TODO : Verifier si c'est des valeurs cohérentes
 
 	} else {
-		pitch_command = airplane.receiver->ch[1];
-		roll_command = airplane.receiver->ch[0];
+		pitch_command = airplane.receiver->filtered[1];
+		roll_command = airplane.receiver->filtered[0];
 	}
 	
 
