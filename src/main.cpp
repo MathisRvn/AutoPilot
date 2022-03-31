@@ -60,7 +60,9 @@ void loop() {
 	static PID RollPIDController(1, 0.2, 1500, 1500);
 
 	imuSensor.tick();
-	receiver.tick();
+	#ifdef ENABLE_RECEIVER_FILTERING
+		receiver.tick();
+	#endif
 
 	// Apply motors output
 	// Continuous binding with radio output; Fail safe need to be configure on radio 
@@ -97,8 +99,8 @@ void loop() {
 		// TODO : Verifier si c'est des valeurs cohérentes
 
 	} else {
-		pitch_command = receiver.filtered[1];
-		roll_command = receiver.filtered[0];
+		pitch_command = receiver.ch[1];
+		roll_command = receiver.ch[0];
 	}
 	
 
@@ -175,5 +177,16 @@ void loop() {
 	}
 
 	wdt_reset();
+
+	// print receiver filtered 0 and 1 and receiver ch 0 and 1
+	Serial.print(receiver.filtered[0]);
+	Serial.print(',');
+	Serial.print(receiver.filtered[1]);
+	Serial.print(',');
+	Serial.print(receiver.ch[0]);
+	Serial.print(',');
+	Serial.print(receiver.ch[1]);
+	Serial.println();
+
 
 }

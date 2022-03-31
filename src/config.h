@@ -2,6 +2,7 @@
 
 /********************* RECEIVER *********************/
 #define RECEIVER_PIN 14
+// #define ENABLE_RECEIVER_FILTERING
 
 /********************* MPU *********************/
 #define MPU_ADDR 0x68

@@ -20,7 +20,7 @@
 #endif
 
 void Receiver::interruptCallback(void) {
-    receiver_now = micros(); // TODO : recalculer limite temps
+    receiver_now = micros(); 
     receiver_delta = receiver_now - last_time_receiver_fall;
     last_time_receiver_fall = receiver_now;
 
@@ -34,28 +34,29 @@ void Receiver::interruptCallback(void) {
     }
 }
 
+#ifdef ENABLE_RECEIVER_FILTERING
+    void Receiver::tick() {
 
-void Receiver::tick() {
-
-    for (short i = 0; i < 6; i++) {
+        for (short i = 0; i < 2; i++) {
 
 
-        // Updating the list of the last ten values
-        previous[i][previous_index[i]] = ch[i];
-        previous_index[i] = (previous_index[i] + 1) % 10;
+            // Updating the list of the last ten values
+            previous[i][previous_index[i]] = ch[i];
+            previous_index[i] = (previous_index[i] + 1) % 10;
 
-        // Filtering the values by taking the average of the last ten values
-        filtered[i] = 0;
+            // Filtering the values by taking the average of the last ten values
+            filtered[i] = 0;
 
-        for (short j = 0; j < 10; j++) {
-            filtered[i] += previous[i][j];
+            for (short j = 0; j < 10; j++) {
+                filtered[i] += previous[i][j];
+            }
+
+            filtered[i] /= 10;
+
         }
 
-        filtered[i] /= 10;
-
     }
-
-}
+#endif
 
 
 void Receiver::print(void) {
