@@ -62,7 +62,11 @@ void loop() {
 	static PID PitchPIDController(1, 0.2, 1500, 1500);
 	static PID RollPIDController(1, 0.2, 1500, 1500);
 
-	imuSensor.tick();
+	// TODO : ajouter un mode enregistrement des données et un mode control de vol
+
+	if (ControlMode = STABILIZER) {
+		imuSensor.tick();
+	}
 	#ifdef ENABLE_RECEIVER_FILTERING
 		receiver.tick();
 	#endif
@@ -74,8 +78,6 @@ void loop() {
 
 	static int pitch_command = 1500;
 	static int roll_command = 1500;
-
-	// TODO : ajouter un mode enregistrement des données et un mode control de vol
 
 	static double pitch_map, roll_map;
 
@@ -112,23 +114,20 @@ void loop() {
 
 	infoLed.tickLed();
 
-	// Detecting the mode
+	// Detecting the mode of the switch on the radio
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
 	else if (receiver.ch[4] > 1800  && imuSensor.initialization_success == true) { 
 		if (ControlMode != STABILIZER) { // Resetting PID controllers
 			PitchPIDController.output(1500, 1500);
 			RollPIDController.output(1500, 1500);
+			imuSensor.tick();
 		}
 		ControlMode = STABILIZER; 
 	}
-	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of SWC
+	else { ControlMode = COPY; } // if between 700 and 1800; = top and middle position of the switch
 
 
-	// Reading and responding to command
-	/*
-	For the protocol, check desktop app doc
-	*/
-
+	// Reading and responding to command from the Serial communication with the computer
 	
 	static char msg[3];
 	static short i = 0;
@@ -150,6 +149,9 @@ void loop() {
 
 		}else if(memcmp(msg, "att", 3) == 0) {
 
+			// Placed here because only needed when control mode is copy.
+			// So for preventing doing unecessary actions, only executed when required by Serial
+			imuSensor.tick(); 
 			imuSensor.printAttitude();
 
 		}else if (memcmp(msg, "cmd", 3) == 0) {

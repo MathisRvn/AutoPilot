@@ -20,6 +20,7 @@ void Led::tickLed () {
         digitalWrite(pin, LOW);
     } else {
 
+        // TODO : remove not static variables
         unsigned long now = millis();
         if (status == LED_SLOW_BLINK) {
 

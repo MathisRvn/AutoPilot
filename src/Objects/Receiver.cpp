@@ -40,6 +40,8 @@ void Receiver::interruptCallback(void) {
         for (short i = 0; i < 2; i++) {
 
 
+            // TODO remove not static variables in for loops
+
             // Updating the list of the last ten values
             previous[i][previous_index[i]] = ch[i];
             previous_index[i] = (previous_index[i] + 1) % 10;

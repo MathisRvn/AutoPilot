@@ -8,6 +8,7 @@ double readEepromDouble(unsigned int addr) {
         double f;
     } data;
 
+    // TODO : remove not static variables in for loops
     for(int i = 0; i < 4; i++) {
         data.b[i] = EEPROM.read(addr+i);
     }
