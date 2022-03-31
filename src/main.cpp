@@ -5,7 +5,6 @@
 
 #include "./config.h"
 
-#include "./Objects/Airplane.h"
 #include "./Objects/Led.h"
 #include "./Objects/PID.h"
 #include "./Objects/Mixer.h"
@@ -26,7 +25,8 @@ typedef enum ModeType {
 
 ModeType ControlMode = OFF;
 
-Servo motor1, motor2;
+Servo motor1, motor2, leftAileronServo, rightAileronServo;
+Led infoLed(BOARD_LED_PIN, LED_SLOW_BLINK);
 
 void setup() {
 
@@ -42,9 +42,13 @@ void setup() {
 
 	pinMode(MOTOR1_PIN, OUTPUT);
 	pinMode(MOTOR2_PIN, OUTPUT);
+	pinMode(LEFT_AILERON_SERVO_PIN, OUTPUT);
+	pinMode(RIGHT_AILERON_SERVO_PIN, OUTPUT);
 
 	motor1.attach(MOTOR1_PIN);
 	motor2.attach(MOTOR2_PIN);
+    leftAileronServo.attach(LEFT_AILERON_SERVO_PIN);
+    rightAileronServo.attach(RIGHT_AILERON_SERVO_PIN);
 
 	wdt_enable(WDTO_TIME);
 	
@@ -52,9 +56,8 @@ void setup() {
 
 void loop() {
 
-	static Airplane airplane;
-	static Mixer leftAileronMixer(&(airplane.leftAileronServo));
-	static Mixer rightAileronMixer(&(airplane.rightAileronServo));
+	static Mixer leftAileronMixer(&(leftAileronServo));
+	static Mixer rightAileronMixer(&(rightAileronServo));
 
 	static PID PitchPIDController(1, 0.2, 1500, 1500);
 	static PID RollPIDController(1, 0.2, 1500, 1500);
@@ -107,7 +110,7 @@ void loop() {
 	leftAileronMixer.tick(roll_command, pitch_command);
 	rightAileronMixer.tick(roll_command, pitch_command);
 
-	airplane.infoLed.tickLed();
+	infoLed.tickLed();
 
 	// Detecting the mode
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }
@@ -177,16 +180,5 @@ void loop() {
 	}
 
 	wdt_reset();
-
-	// print receiver filtered 0 and 1 and receiver ch 0 and 1
-	Serial.print(receiver.filtered[0]);
-	Serial.print(',');
-	Serial.print(receiver.filtered[1]);
-	Serial.print(',');
-	Serial.print(receiver.ch[0]);
-	Serial.print(',');
-	Serial.print(receiver.ch[1]);
-	Serial.println();
-
 
 }
