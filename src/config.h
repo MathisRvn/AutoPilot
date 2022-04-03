@@ -31,6 +31,7 @@
 #define RIGHT_AILERON_SERVO_PIN SERVO2_PIN
 
 /********************* LED *********************/
+// #define IS_LED_ENABLED
 #define BOARD_LED_PIN 11
 
 // mode config

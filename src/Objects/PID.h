@@ -11,6 +11,10 @@
             double last_error;
             unsigned long last_tick;
 
+            unsigned long now;
+            double error;
+            double derivative_error;
+
             PID (double initial_kp, double initial_kd, double target, double current_position);
             double output (double target, double current_position);
 

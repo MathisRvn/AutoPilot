@@ -6,6 +6,7 @@
 #include "./config.h"
 
 #include "./Objects/Led.h"
+
 #include "./Objects/PID.h"
 #include "./Objects/Mixer.h"
 
@@ -26,7 +27,9 @@ typedef enum ModeType {
 ModeType ControlMode = OFF;
 
 Servo motor1, motor2, leftAileronServo, rightAileronServo;
-Led infoLed(BOARD_LED_PIN, LED_SLOW_BLINK);
+#ifdef IS_LED_ENABLED
+	Led infoLed(BOARD_LED_PIN, LED_SLOW_BLINK);
+#endif
 
 void setup() {
 
@@ -64,9 +67,10 @@ void loop() {
 
 	// TODO : ajouter un mode enregistrement des données et un mode control de vol
 
-	if (ControlMode = STABILIZER) {
+	if (ControlMode == STABILIZER) {
 		imuSensor.tick();
 	}
+
 	#ifdef ENABLE_RECEIVER_FILTERING
 		receiver.tick();
 	#endif
@@ -112,7 +116,9 @@ void loop() {
 	leftAileronMixer.tick(roll_command, pitch_command);
 	rightAileronMixer.tick(roll_command, pitch_command);
 
-	infoLed.tickLed();
+	#ifdef IS_LED_ENABLED
+		infoLed.tickLed();
+	#endif
 
 	// Detecting the mode of the switch on the radio
 	if (receiver.ch[4] < 700) { ControlMode = OFF; }

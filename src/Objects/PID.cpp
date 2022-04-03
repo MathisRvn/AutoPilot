@@ -10,10 +10,9 @@ PID::PID (double initial_kp, double initial_kd, double target, double current_po
 }
 
 double PID::output (double target, double current_position) {
-    // TODO : remove not static variables
-    unsigned long now = micros();
-    double error = target - current_position;
-    double derivative_error = (error - last_error) / (now - last_tick);
+    now = micros();
+    error = target - current_position;
+    derivative_error = (error - last_error) / (now - last_tick);
     last_error = error;
     last_tick = now;
     return 1500 + kp * error + kd *  derivative_error;
