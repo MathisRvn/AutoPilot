@@ -20,3 +20,6 @@ I just keep this as example
 */
 
 // TODO inplement memory
+
+
+#define I2C_EEPROM_ADDR 0x50
