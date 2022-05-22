@@ -10,6 +10,18 @@
 #include "./Objects/PID.h"
 #include "./Objects/Mixer.h"
 
+#include "./memoryConfig.h"
+#include "./Objects/EEPROM_.h"
+I2C_EEPROM ext_mem(I2C_EEPROM_ADDR);
+INTERNAL_EEPROM int_mem;
+
+unsigned long current_time;
+unsigned long last_saving_time;
+unsigned long block_start_time;
+short process_index; // process = 1 (info n1 savec); 2 (info n2 saved)...
+int saving_addr;
+
+
 #include "./Objects/Receiver.h"
 void receiverInterrupt(); // Because we use an object, wa have to create this intermediate function
 Receiver receiver(RECEIVER_PIN, receiverInterrupt);
@@ -52,6 +64,16 @@ void setup() {
 	motor2.attach(MOTOR2_PIN);
     leftAileronServo.attach(LEFT_AILERON_SERVO_PIN);
     rightAileronServo.attach(RIGHT_AILERON_SERVO_PIN);
+
+
+	// Memory initialisation
+	current_time = millis();
+	last_saving_time = current_time;
+	block_start_time = current_time;
+	process_index = 0; // process = 1 (info n1 savec); 2 (info n2 saved)...
+	saving_addr = int_mem.read2Byte(MEMORY_CURSOR_ADDR);
+
+
 
 	wdt_enable(WDTO_TIME);
 	
@@ -182,9 +204,70 @@ void loop() {
 
 		}else if (memcmp(msg, "cal", 3) == 0) {
 			imuSensor.calibrate();
+
+		}else if (memcmp(msg, "mem", 3) == 0) {
+			wdt_disable();
+
+			for (int i = 0; i < EXT_MEMORY_SIZE; i+=4) {
+				Serial.print(ext_mem.read4Bytes(i));
+				Serial.print(',');
+			}
+			Serial.println();
+			wdt_enable(WDTO_TIME);
+
+		}else if (memcmp(msg, "cln", 3) == 0) {
+			wdt_disable();
+
+			Serial.println("Start resetting");
+			for (int i = 0; i < EXT_MEMORY_SIZE; i+=4) {
+				ext_mem.write4Bytes(i, 0x00000000);
+				delay(5);
+			}
+			Serial.println("end resetting");
+
+			saving_addr = 0;
+			int_mem.write2Byte(MEMORY_CURSOR_ADDR, saving_addr);
+
+			wdt_enable(WDTO_TIME);
 		}
 		
 	
+	}
+
+
+
+	// DATA SAVING. 
+
+	// TODO saving_addr should be the packet start point. other positions should be calculated using process_index
+
+	current_time = millis();
+
+	if (current_time - block_start_time > 1000) {
+		block_start_time = current_time;
+		process_index=0;
+	}
+
+	if (current_time-last_saving_time > 5 && process_index <= 2) { // We can't save ofter than 5ms 
+
+		switch (process_index)
+		{
+		case 0:
+			ext_mem.write4Bytes(saving_addr, current_time); // /!\ not use saving addr
+			break;
+		
+		default:
+			break;
+		}
+
+		ext_mem.write4Bytes(saving_addr, current_time); // /!\ not use saving addr
+
+		// Serial.println(saving_addr);
+
+		process_index += 1;
+		saving_addr += 4; // /!\ not use saving addr
+		if (saving_addr >= EXT_MEMORY_SIZE) { saving_addr = 0; } // /!\ not use saving addr
+		int_mem.write2Byte(MEMORY_CURSOR_ADDR, saving_addr); // /!\ not use saving addr
+
 	}
 
 	wdt_reset();

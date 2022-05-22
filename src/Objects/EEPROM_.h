@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #ifndef EEPROM_H_
     #define EEPROM_H_
 
@@ -7,7 +9,7 @@
 
         public:
 
-            INTERNAL_EEPROM();
+            // INTERNAL_EEPROM();
 
             void writeByte(uint8_t addr, byte x);
             byte readByte(uint8_t addr);
@@ -28,8 +30,8 @@
             void writeByte(uint16_t addr, byte x);
             byte readByte(uint16_t addr);
 
-            void write2Byte(uint8_t addr, uint16_t x);
-            uint16_t read2Byte(uint8_t addr);
+            void write4Bytes(uint16_t addr, uint32_t x);
+            uint32_t read4Bytes(uint16_t addr);
 
     };
 

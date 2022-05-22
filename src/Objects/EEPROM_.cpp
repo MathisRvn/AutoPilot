@@ -65,3 +65,46 @@ byte I2C_EEPROM::readByte(uint16_t addr) {
     return Wire.read();
 
 }
+
+void I2C_EEPROM::write4Bytes(uint16_t addr, uint32_t x) {
+    
+        // Look datasheet for protocol : https://datasheet.lcsc.com/lcsc/1809171607_onsemi-CAT24M01WI-GT3_C62273.pdf
+    
+        Wire.beginTransmission(I2C_addr);
+    
+        // Send memory address
+        Wire.write(addr >> 8);
+        Wire.write(addr & 0xFF);
+    
+        // Send data
+        Wire.write(x & 0xFF);
+        Wire.write((x >> 8) & 0xFF);
+        Wire.write((x >> 16) & 0xFF);
+        Wire.write((x >> 24) & 0xFF);
+    
+        Wire.endTransmission();
+    
+}
+
+uint32_t I2C_EEPROM::read4Bytes(uint16_t addr) {
+
+    // Look datasheet for protocol : https://datasheet.lcsc.com/lcsc/1809171607_onsemi-CAT24M01WI-GT3_C62273.pdf
+
+    Wire.beginTransmission(I2C_addr);
+
+    // Send memory address
+    Wire.write(addr >> 8);
+    Wire.write(addr & 0xFF);
+
+    Wire.endTransmission();
+
+    Wire.requestFrom(I2C_addr, 4);
+
+    uint32_t x = Wire.read();
+    x |= Wire.read() << 8;
+    x |= Wire.read() << 16;
+    x |= Wire.read() << 24;
+
+    return x;
+
+}

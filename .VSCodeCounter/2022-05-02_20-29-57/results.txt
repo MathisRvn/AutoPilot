@@ -1,0 +1,40 @@
+Date : 2022-05-02 20:29:57
+Directory : /home/mathisrevenu/Documents/AutoPilot/src
+Total : 15 files,  543 codes, 83 comments, 280 blanks, all 906 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         15 |        543 |         83 |        280 |        906 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                            | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                               |         15 |        543 |         83 |        280 |        906 |
+| Objects                                                         |         12 |        349 |         30 |        179 |        558 |
++-----------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                        | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Attitude.cpp | C++      |         56 |          2 |         26 |         84 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Attitude.h   | C++      |         31 |          2 |         15 |         48 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/EEPROM_.cpp  | C++      |         59 |         12 |         39 |        110 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/EEPROM_.h    | C++      |         21 |          1 |         16 |         38 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Led.cpp      | C++      |         34 |          1 |         12 |         47 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Led.h        | C++      |         15 |          0 |          9 |         24 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Mixer.cpp    | C++      |         18 |          3 |         10 |         31 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Mixer.h      | C++      |         12 |          0 |          9 |         21 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/PID.cpp      | C++      |         16 |          0 |          3 |         19 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/PID.h        | C++      |         15 |          0 |          8 |         23 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Receiver.cpp | C++      |         54 |          3 |         23 |         80 |
+| /home/mathisrevenu/Documents/AutoPilot/src/Objects/Receiver.h   | C++      |         18 |          6 |          9 |         33 |
+| /home/mathisrevenu/Documents/AutoPilot/src/config.h             | C++      |         20 |         12 |         13 |         45 |
+| /home/mathisrevenu/Documents/AutoPilot/src/main.cpp             | C++      |        171 |         20 |         84 |        275 |
+| /home/mathisrevenu/Documents/AutoPilot/src/memoryConfig.h       | C++      |          3 |         21 |          4 |         28 |
+| Total                                                           |          |        543 |         83 |        280 |        906 |
++-----------------------------------------------------------------+----------+------------+------------+------------+------------+

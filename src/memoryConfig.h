@@ -23,3 +23,6 @@ I just keep this as example
 
 
 #define I2C_EEPROM_ADDR 0x50
+
+#define MEMORY_CURSOR_ADDR 0x00
+#define EXT_MEMORY_SIZE 256
